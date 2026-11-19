@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Navbar, TabId } from './components/Navbar';
+import { FilamentosTab } from './components/FilamentosTab';
 import { ConfiguracoesModal } from './components/ConfiguracoesModal';
-import { AppDataState, ConfiguracoesGlobais } from './types';
-import { getStoredData, subscribeToData, updateConfiguracoes } from './services/storageService';
+import { AppDataState, Filamento, ConfiguracoesGlobais } from './types';
+import { getStoredData, subscribeToData, updateFilamentos, updateConfiguracoes } from './services/storageService';
 
 export const App: React.FC = () => {
   const [dataState, setDataState] = useState<AppDataState>(getStoredData());
-  const [activeTab, setActiveTab] = useState<TabId>('calculadora');
+  const [activeTab, setActiveTab] = useState<TabId>('filamentos');
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [darkMode, setDarkMode] = useState<boolean>(() => localStorage.getItem('printval_dark_mode') === 'true');
 
@@ -19,9 +20,30 @@ export const App: React.FC = () => {
     return subscribeToData((novoEstado) => setDataState(novoEstado));
   }, []);
 
-  const handleSalvarConfig = (novaConfig: ConfiguracoesGlobais) => {
-    updateConfiguracoes(novaConfig);
-  };
+  const handleSalvarFilamento = useCallback((filamento: Filamento) => {
+    setDataState((prev) => {
+      const idx = prev.filamentos.findIndex((f) => f.id === filamento.id);
+      const novos = idx >= 0 ? prev.filamentos.map((f, i) => (i === idx ? filamento : f)) : [filamento, ...prev.filamentos];
+      updateFilamentos(novos);
+      return { ...prev, filamentos: novos };
+    });
+  }, []);
+
+  const handleExcluirFilamento = useCallback((id: string) => {
+    setDataState((prev) => {
+      const novos = prev.filamentos.filter((f) => f.id !== id);
+      updateFilamentos(novos);
+      return { ...prev, filamentos: novos };
+    });
+  }, []);
+
+  const handleToggleFavorito = useCallback((id: string) => {
+    setDataState((prev) => {
+      const novos = prev.filamentos.map((f) => (f.id === id ? { ...f, favorito: !f.favorito } : f));
+      updateFilamentos(novos);
+      return { ...prev, filamentos: novos };
+    });
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
@@ -37,19 +59,19 @@ export const App: React.FC = () => {
         onExportJSON={() => {}}
         onImportJSON={() => {}}
       />
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8">
-        <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center">
-          <h2 className="text-lg font-bold">Módulos de Navegação, Configurações e Exportação Prontos</h2>
-          <p className="text-sm text-slate-500 mt-1">
-            Gerador de PDF (jsPDF), compartilhamento WhatsApp e painel de configurações globais integrados.
-          </p>
-        </div>
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
+        <FilamentosTab
+          filamentos={dataState.filamentos}
+          onSalvarFilamento={handleSalvarFilamento}
+          onExcluirFilamento={handleExcluirFilamento}
+          onToggleFavorito={handleToggleFavorito}
+        />
       </main>
       <ConfiguracoesModal
         isOpen={isConfigOpen}
         onClose={() => setIsConfigOpen(false)}
         config={dataState.configuracoes}
-        onSalvarConfig={handleSalvarConfig}
+        onSalvarConfig={(c: ConfiguracoesGlobais) => updateConfiguracoes(c)}
         isDriveConnected={false}
         onConectarDrive={() => {}}
         onDesconectarDrive={() => {}}

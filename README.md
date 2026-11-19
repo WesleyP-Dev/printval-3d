@@ -1,23 +1,24 @@
 # PrintVal 3D — Sistema de Precificação e Gestão
 
-> **Versão 0.2.0 (Navegação, Configurações Globais & Exportação PDF/WhatsApp)**
+> **Versão 0.3.0 (Gestão Completa de Estoque de Filamentos)**
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
 - **React 18** + **TypeScript** + **Vite** + **Tailwind CSS**
-- **[Lucide React](https://lucide.dev/):** Biblioteca de ícones vetoriais modernos.
-- **[jsPDF](https://github.com/parallax/jsPDF) & [jsPDF-AutoTable](https://github.com/simonbengtsson/jsPDF-AutoTable):** Geração de propostas comerciais em PDF diretamente no navegador.
+- **Lucide React** (ícones) + **jsPDF / AutoTable** (exportação de propostas)
 
 ---
 
-## ✅ Novidades desta Versão (v0.2.0)
+## ✅ Novidades desta Versão (v0.3.0)
 
-- **Barra de Navegação (`Navbar.tsx`):** Suporte a abas, alternância de Tema Claro/Escuro (*Dark Mode*) e menu responsivo.
-- **Painel de Configurações (`ConfiguracoesModal.tsx`):** Ajuste de custo de kWh, potência da impressora, depreciação, taxas de setup, descontos à vista e dados da oficina (Pix/Binance Pay).
-- **Gerador de Propostas PDF (`pdfGenerator.ts`):** Exportação de orçamentos comerciais profissionais com tabelas formatadas.
-- **Compartilhamento WhatsApp (`whatsappShare.ts`):** Geração de resumo formatado pronto para envio ao cliente.
+- **Aba de Filamentos (`FilamentosTab.tsx`):**
+  - Cadastro, edição e exclusão de bobinas (PLA, PETG, ABS, TPU, ASA, Resina).
+  - Controle de peso total vs. saldo restante em gramas com barra de progresso visual.
+  - Histórico de variação de preços por rolo e marcação de favoritos.
+  - Filtros rápidos por tipo de material e busca por nome/cor.
+- **Modal de Cadastro (`FilamentoModal.tsx`):** Seletor de cor hexadecimal e fator de risco/qualidade por material.
 
 ---
 
