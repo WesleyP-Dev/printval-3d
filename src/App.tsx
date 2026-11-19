@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Navbar, TabId } from './components/Navbar';
+import { CalculadoraTab } from './components/CalculadoraTab';
 import { FilamentosTab } from './components/FilamentosTab';
 import { ConfiguracoesModal } from './components/ConfiguracoesModal';
-import { AppDataState, Filamento, ConfiguracoesGlobais } from './types';
-import { getStoredData, subscribeToData, updateFilamentos, updateConfiguracoes } from './services/storageService';
+import { AppDataState, Filamento, Orcamento, ConfiguracoesGlobais } from './types';
+import { getStoredData, subscribeToData, updateFilamentos, updateOrcamentos, updateConfiguracoes } from './services/storageService';
 
 export const App: React.FC = () => {
   const [dataState, setDataState] = useState<AppDataState>(getStoredData());
-  const [activeTab, setActiveTab] = useState<TabId>('filamentos');
+  const [activeTab, setActiveTab] = useState<TabId>('calculadora');
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [darkMode, setDarkMode] = useState<boolean>(() => localStorage.getItem('printval_dark_mode') === 'true');
 
@@ -45,6 +46,14 @@ export const App: React.FC = () => {
     });
   }, []);
 
+  const handleSalvarOrcamento = useCallback((orcamento: Orcamento) => {
+    setDataState((prev) => {
+      const novos = [orcamento, ...prev.orcamentos];
+      updateOrcamentos(novos);
+      return { ...prev, orcamentos: novos };
+    });
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
       <Navbar
@@ -60,12 +69,21 @@ export const App: React.FC = () => {
         onImportJSON={() => {}}
       />
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
-        <FilamentosTab
-          filamentos={dataState.filamentos}
-          onSalvarFilamento={handleSalvarFilamento}
-          onExcluirFilamento={handleExcluirFilamento}
-          onToggleFavorito={handleToggleFavorito}
-        />
+        {activeTab === 'calculadora' && (
+          <CalculadoraTab
+            filamentos={dataState.filamentos}
+            configuracoes={dataState.configuracoes}
+            onSalvarOrcamento={handleSalvarOrcamento}
+          />
+        )}
+        {activeTab === 'filamentos' && (
+          <FilamentosTab
+            filamentos={dataState.filamentos}
+            onSalvarFilamento={handleSalvarFilamento}
+            onExcluirFilamento={handleExcluirFilamento}
+            onToggleFavorito={handleToggleFavorito}
+          />
+        )}
       </main>
       <ConfiguracoesModal
         isOpen={isConfigOpen}
