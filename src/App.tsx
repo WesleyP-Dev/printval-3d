@@ -2,13 +2,15 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Navbar, TabId } from './components/Navbar';
 import { CalculadoraTab } from './components/CalculadoraTab';
 import { FilamentosTab } from './components/FilamentosTab';
+import { HistoricoTab } from './components/HistoricoTab';
 import { ConfiguracoesModal } from './components/ConfiguracoesModal';
-import { AppDataState, Filamento, Orcamento, ConfiguracoesGlobais } from './types';
+import { AppDataState, Filamento, Orcamento, ConfiguracoesGlobais, StatusOrcamento } from './types';
 import { getStoredData, subscribeToData, updateFilamentos, updateOrcamentos, updateConfiguracoes } from './services/storageService';
 
 export const App: React.FC = () => {
   const [dataState, setDataState] = useState<AppDataState>(getStoredData());
   const [activeTab, setActiveTab] = useState<TabId>('calculadora');
+  const [orcamentoParaClonar, setOrcamentoParaClonar] = useState<Orcamento | null>(null);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [darkMode, setDarkMode] = useState<boolean>(() => localStorage.getItem('printval_dark_mode') === 'true');
 
@@ -54,6 +56,27 @@ export const App: React.FC = () => {
     });
   }, []);
 
+  const handleAlterarStatus = useCallback((id: string, novoStatus: StatusOrcamento) => {
+    setDataState((prev) => {
+      const novos = prev.orcamentos.map((o) => (o.id === id ? { ...o, status: novoStatus } : o));
+      updateOrcamentos(novos);
+      return { ...prev, orcamentos: novos };
+    });
+  }, []);
+
+  const handleExcluirOrcamento = useCallback((id: string) => {
+    setDataState((prev) => {
+      const novos = prev.orcamentos.filter((o) => o.id !== id);
+      updateOrcamentos(novos);
+      return { ...prev, orcamentos: novos };
+    });
+  }, []);
+
+  const handleClonar = useCallback((orcamento: Orcamento) => {
+    setOrcamentoParaClonar(orcamento);
+    setActiveTab('calculadora');
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
       <Navbar
@@ -74,6 +97,8 @@ export const App: React.FC = () => {
             filamentos={dataState.filamentos}
             configuracoes={dataState.configuracoes}
             onSalvarOrcamento={handleSalvarOrcamento}
+            orcamentoParaClonar={orcamentoParaClonar}
+            onLimparClonagem={() => setOrcamentoParaClonar(null)}
           />
         )}
         {activeTab === 'filamentos' && (
@@ -82,6 +107,15 @@ export const App: React.FC = () => {
             onSalvarFilamento={handleSalvarFilamento}
             onExcluirFilamento={handleExcluirFilamento}
             onToggleFavorito={handleToggleFavorito}
+          />
+        )}
+        {activeTab === 'historico' && (
+          <HistoricoTab
+            orcamentos={dataState.orcamentos}
+            configuracoes={dataState.configuracoes}
+            onAlterarStatus={handleAlterarStatus}
+            onExcluirOrcamento={handleExcluirOrcamento}
+            onClonarOrcamento={handleClonar}
           />
         )}
       </main>

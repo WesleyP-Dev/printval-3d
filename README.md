@@ -1,6 +1,6 @@
 # PrintVal 3D — Sistema de Precificação e Gestão
 
-> **Versão 0.4.0 (Calculadora 3D Multi-Material Completa)**
+> **Versão 0.5.0 (Histórico de Pedidos, Controle de Status & Clonagem)**
 
 ---
 
@@ -11,16 +11,14 @@
 
 ---
 
-## ✅ Novidades desta Versão (v0.4.0)
+## ✅ Novidades desta Versão (v0.5.0)
 
-- **Calculadora de Impressão 3D (`CalculadoraTab.tsx`):**
-  - Suporte a **múltiplos materiais e cores** em uma mesma peça/projeto (ex: Corpo em PLA Preto + Detalhes em PETG Azul).
-  - Verificação automática de saldo disponível no estoque do filamento.
-  - Cálculo de tempo de máquina, energia elétrica, depreciação e setup fixo por lote.
-  - Presets de complexidade de pós-processamento (Nenhum, Simples, Médio, Complexo ou Manual).
-  - Insumos secundários (ímãs, parafusos, argolas, verniz) por unidade ou por lote.
-  - Desconto comercial avulso e comparativo À Vista (Pix/Binance Pay) vs. Cartão.
-  - Salvamento automático de rascunho no `localStorage` para não perder dados ao trocar de aba.
+- **Histórico de Orçamentos (`HistoricoTab.tsx`):**
+  - Listagem completa de pedidos com busca por cliente, número ou projeto.
+  - Filtros de status (*Pendente*, *Aprovado*, *Entregue*, *Cancelado*).
+  - Baixa automática de estoque de filamento ao aprovar um pedido.
+  - Clonagem de orçamentos antigos diretamente para a calculadora para reprecificação rápida.
+- **Modal de Detalhes (`OrcamentoDetalhesModal.tsx`):** Visualização completa dos custos, materiais e opções de exportação em PDF ou WhatsApp.
 
 ---
 
