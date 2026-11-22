@@ -1,24 +1,25 @@
 # PrintVal 3D — Sistema de Precificação e Gestão
 
-> **Versão 0.5.0 (Histórico de Pedidos, Controle de Status & Clonagem)**
+> **Versão 0.6.0 (Análise Financeira & Ponto de Equilíbrio - Break-Even)**
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
 - **React 18** + **TypeScript** + **Vite** + **Tailwind CSS**
+- **[Recharts](https://recharts.org/):** Gráficos interativos para análise financeira e faturamento.
 - **Lucide React** + **jsPDF / AutoTable**
 
 ---
 
-## ✅ Novidades desta Versão (v0.5.0)
+## ✅ Novidades desta Versão (v0.6.0)
 
-- **Histórico de Orçamentos (`HistoricoTab.tsx`):**
-  - Listagem completa de pedidos com busca por cliente, número ou projeto.
-  - Filtros de status (*Pendente*, *Aprovado*, *Entregue*, *Cancelado*).
-  - Baixa automática de estoque de filamento ao aprovar um pedido.
-  - Clonagem de orçamentos antigos diretamente para a calculadora para reprecificação rápida.
-- **Modal de Detalhes (`OrcamentoDetalhesModal.tsx`):** Visualização completa dos custos, materiais e opções de exportação em PDF ou WhatsApp.
+- **Dashboard de Ponto de Equilíbrio (`BreakEvenTab.tsx`):**
+  - Cálculo automático de custos fixos mensais + amortização mensal da impressora.
+  - Indicador de margem de contribuição média por hora faturada.
+  - Meta de horas e quantidade de peças necessárias no mês para atingir o ponto de equilíbrio (*Break-Even*).
+  - Gráficos comparativos de faturamento vs. lucro líquido estimado usando **Recharts**.
+- **Otimização de Bundle:** Code-splitting configurado no `vite.config.ts` para separar chunks pesados (`vendor-recharts`, `vendor-icons`).
 
 ---
 

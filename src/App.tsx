@@ -3,6 +3,7 @@ import { Navbar, TabId } from './components/Navbar';
 import { CalculadoraTab } from './components/CalculadoraTab';
 import { FilamentosTab } from './components/FilamentosTab';
 import { HistoricoTab } from './components/HistoricoTab';
+import { BreakEvenTab } from './components/BreakEvenTab';
 import { ConfiguracoesModal } from './components/ConfiguracoesModal';
 import { AppDataState, Filamento, Orcamento, ConfiguracoesGlobais, StatusOrcamento } from './types';
 import { getStoredData, subscribeToData, updateFilamentos, updateOrcamentos, updateConfiguracoes } from './services/storageService';
@@ -116,6 +117,13 @@ export const App: React.FC = () => {
             onAlterarStatus={handleAlterarStatus}
             onExcluirOrcamento={handleExcluirOrcamento}
             onClonarOrcamento={handleClonar}
+          />
+        )}
+        {activeTab === 'breakeven' && (
+          <BreakEvenTab
+            orcamentos={dataState.orcamentos}
+            configuracoes={dataState.configuracoes}
+            onAtualizarConfig={(c: ConfiguracoesGlobais) => updateConfiguracoes(c)}
           />
         )}
       </main>
